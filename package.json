@@ -1,6 +1,6 @@
 {
   "name": "@ladjs/naivebayes",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Naive Bayes Classifier for JavaScript.",
   "author": {
     "name": "Shaun Warman",
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ladjs/naivebayes.git"
+    "url": "https://github.com/shaunwarman/naivebayes"
   },
   "main": "dist/naivebayes.js",
   "module": "dist/naivebayes.esm.js",
@@ -30,7 +30,6 @@
   ],
   "scripts": {
     "ava": "cross-env NODE_ENV=test ava",
-    "build": "rm -rf ./dist/* && abc build",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "lint": "xo && remark . -qfo",
     "nyc": "cross-env NODE_ENV=test nyc ava",
@@ -93,18 +92,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/shaunwarman/naivebayes"
-  },
-  "scripts": {
-    "ava": "cross-env NODE_ENV=test ava",
-    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "lint": "xo && remark . -qfo",
-    "nyc": "cross-env NODE_ENV=test nyc ava",
-    "test": "yarn run lint && yarn run ava",
-    "test-coverage": "yarn run lint && yarn run nyc"
-  },
   "xo": {
     "prettier": true,
     "space": true,
@@ -115,13 +102,6 @@
   "remarkConfig": {
     "plugins": [
       "preset-github"
-    ]
-  },
-  "xo": {
-    "prettier": true,
-    "space": true,
-    "extends": [
-      "xo-lass"
     ]
   }
 }
