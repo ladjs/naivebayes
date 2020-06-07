@@ -1,47 +1,27 @@
 {
   "name": "@ladjs/naivebayes",
-  "version": "0.0.1",
   "description": "Naive Bayes Classifier for JavaScript.",
+  "version": "0.0.1",
   "author": {
     "name": "Shaun Warman",
     "url": "https://github.com/ladjs"
+  },
+  "bugs": {
+    "url": "https://github.com/ladjs/naivebayes/issues",
+    "email": "shaunwarman1@gmail.com"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "contributors": [
     "Surmon <i@surmon.me> (http://surmon.me/)",
     "Shaun Warman <shaunwarman1@gmail.com> (https://shaunwarman.com/)"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/shaunwarman/naivebayes"
-  },
-  "main": "dist/naivebayes.js",
-  "module": "dist/naivebayes.esm.js",
-  "browser": "dist/naivebayes.js",
-  "jsdelivr": "dist/naivebayes.js",
-  "unpkg": "dist/naivebayes.js",
-  "jspm": {
-    "main": "dist/naivebayes.esm.js",
-    "registry": "npm",
-    "format": "esm"
-  },
-  "files": [
-    "src",
-    "dist/*.js"
-  ],
-  "scripts": {
-    "ava": "cross-env NODE_ENV=test ava",
-    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "lint": "xo && remark . -qfo",
-    "nyc": "cross-env NODE_ENV=test nyc ava",
-    "test": "yarn run lint && yarn run ava",
-    "test-coverage": "yarn run lint && yarn run nyc"
-  },
-  "private": false,
-  "license": "MIT",
   "devDependencies": {
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
-    "@surmon-china/abc-factory": "^0.3.0",
     "ava": "latest",
     "codecov": "latest",
     "cross-env": "latest",
@@ -55,21 +35,16 @@
     "remark-preset-github": "latest",
     "xo": "latest"
   },
-  "bugs": {
-    "url": "https://github.com/ladjs/naivebayes/issues",
-    "email": "shaunwarman1@gmail.com"
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
+  "files": [
+    "src"
+  ],
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged && npm test",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
+  "license": "MIT",
   "lint-staged": {
     "*.js": [
       "xo --fix",
@@ -84,24 +59,38 @@
       "git add"
     ]
   },
+  "main": "src/index.js",
   "prettier": {
     "singleQuote": true,
     "bracketSpacing": true,
     "trailingComma": "none"
   },
+  "private": false,
   "publishConfig": {
     "access": "public"
+  },
+  "remarkConfig": {
+    "plugins": [
+      "preset-github"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ladjs/naivebayes"
+  },
+  "scripts": {
+    "ava": "cross-env NODE_ENV=test ava",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "lint": "xo && remark . -qfo",
+    "nyc": "cross-env NODE_ENV=test nyc ava",
+    "test": "yarn run lint && yarn run ava",
+    "test-coverage": "yarn run lint && yarn run nyc"
   },
   "xo": {
     "prettier": true,
     "space": true,
     "extends": [
       "xo-lass"
-    ]
-  },
-  "remarkConfig": {
-    "plugins": [
-      "preset-github"
     ]
   }
 }
