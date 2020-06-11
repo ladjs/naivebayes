@@ -124,8 +124,10 @@ const classifier = new NaiveBayes([options])
 
 Returns an instance of a Naive-Bayes Classifier.
 
-Pass in an optional `options` object to configure the instance. If you specify a `tokenizer` function in `options`, it will be used as the instance's tokenizer. It receives a (string) `text` argument - this is the string value that is passed in by you when you call `.learn()` or `.categorize()`. It must return an array of tokens.
-You can also specify a (number) `vocabularyLimit` to reference a max word count where `0` is the default, meaning no limit.
+#### Options
+
+* `tokenizer(text)` - (type: `function`) -  Configure your own tokenizer.
+* `vocabularyLimit` - (type: `number` default: 0) - Reference a max word count where `0` is the default, meaning no limit.
 
 Eg.
 

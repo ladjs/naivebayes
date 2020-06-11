@@ -6,43 +6,20 @@ function decode(text) {
   return Buffer.from(text, 'base64').toString();
 }
 
-test('naivebase with limit', (t) => {
+test('naivebayes', (t) => {
+  classifier.learn('amazing, awesome movie!! Yeah!! Oh boy.', 'positive');
   classifier.learn(
-    decode('YW1hemluZywgYXdlc29tZSBtb3ZpZSEhIFllYWghISBPaCBib3ku'),
+    'Sweet, this is incredibly, amazing, perfect, great!!',
     'positive'
   );
-  classifier.learn(
-    decode(
-      'U3dlZXQsIHRoaXMgaXMgaW5jcmVkaWJseSwgYW1hemluZywgcGVyZmVjdCwgZ3JlYXQhIQ=='
-    ),
-    'positive'
-  );
-  classifier.learn(
-    decode('RG8gb25lIHRoaW5nIGF0IGEgdGltZSwgYW5kIGRvIHdlbGwu'),
-    'positive'
-  );
-  classifier.learn(
-    decode('TmV2ZXIgZm9yZ2V0IHRvIHNheSDigJx0aGFua3PigJ0u'),
-    'positive'
-  );
-  classifier.learn(decode('QmVsaWV2ZSBpbiB5b3Vyc2VsZi4='), 'positive');
-  classifier.learn(
-    decode(
-      'TmV2ZXIgcHV0IG9mZiB3aGF0IHlvdSBjYW4gZG8gdG9kYXkgdW50aWwgdG9tb3Jyb3cu'
-    ),
-    'positive'
-  );
-  classifier.learn(
-    decode(
-      'RG9uJ3QgYWltIGZvciBzdWNjZXNzIGlmIHlvdSB3YW50IGl0OyBqdXN0IGRvIHdoYXQgeW91IGxvdmUgYW5kIGJlbGlldmUgaW4sIGFuZCBpdCB3aWxsIGNvbWUgbmF0dXJhbGx5Lg=='
-    ),
-    'positive'
-  );
+  classifier.learn('Do one thing at a time, and do well.', 'positive');
+  classifier.learn('Never forget to say “thanks”.', 'positive');
+  classifier.learn('Believe in yourself.', 'positive');
 
-  classifier.learn(
-    decode('dGVycmlibGUsIHNoaXR0eSB0aGluZy4gRGFtbi4gU3Vja3MhIQ=='),
-    'negative'
-  );
+  classifier.learn('terrible, crappy thing. Dang. Stinks!!', 'negative');
+  classifier.learn('ugh, bad. This is annoying.', 'negative');
+  classifier.learn('crud, this sucks', 'negative');
+  classifier.learn('awful, no way', 'negative');
 
   classifier.learn(decode('R2V0IG91dCAhQmVhdCBpdCEgR2V0IGxvc3Qh'), 'foul');
   classifier.learn(decode('R28gdG8gaGVsbCEgR28gdG8gdGhlIGRldmlsIQ=='), 'foul');

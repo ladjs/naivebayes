@@ -116,11 +116,14 @@ class NaiveBayes {
      */
     Object.keys(frequencyTable).forEach((token) => {
       // add this word to our vocabulary if not already existing
-      if (!this.vocabulary.includes(token)) {
+      if (!this.vocabulary[token]) {
         this.vocabulary.push(token);
       }
 
       const frequencyInText = frequencyTable[token];
+
+      if (!this.wordFrequencyCount[category])
+        this.wordFrequencyCount[category] = {};
 
       // update the frequency information for this word in this category
       if (this.wordFrequencyCount[category][token]) {
@@ -132,6 +135,60 @@ class NaiveBayes {
       // update the count of all words we have seen mapped to this category
       this.wordCount[category] += frequencyInText;
     });
+
+    if (!this.vocabularyLimit || this.vocabulary.length <= this.vocabularyLimit)
+      return this;
+
+    // create sortable structure from nested frequency count
+    const sortableWordFreqCount = {};
+    for (const category in this.wordFrequencyCount) {
+      if (Object.hasOwnProperty.call(this.wordFrequencyCount, category)) {
+        for (const word in this.wordFrequencyCount[category]) {
+          if (
+            Object.hasOwnProperty.call(this.wordFrequencyCount[category], word)
+          )
+            sortableWordFreqCount[
+              `${category}:${word}`
+            ] = this.wordFrequencyCount[category][word];
+        }
+      }
+    }
+
+    // sort the structure based on value (word frequency across categories)
+    const frequentWords = Object.keys(sortableWordFreqCount).sort(
+      (a, b) => sortableWordFreqCount[b] - sortableWordFreqCount[a]
+    );
+
+    const newFrequencyTable = {};
+
+    // keep the most frequent words across categories
+    let count = 0;
+    for (const word of frequentWords) {
+      count += sortableWordFreqCount[word];
+      newFrequencyTable[word] = sortableWordFreqCount[word];
+      if (count >= this.vocabularyLimit) break;
+    }
+
+    // reconstruct original frequency count object
+    // of { <category>: { <word>: <frequency> } }
+    const newWordFrequencyCount = {};
+    this.vocabulary = [];
+    this.wordCount = {};
+    for (const key in newFrequencyTable) {
+      if (Object.hasOwnProperty.call(newFrequencyTable, key)) {
+        const [category, word] = key.split(':');
+        if (!newWordFrequencyCount[category]) {
+          newWordFrequencyCount[category] = {};
+          this.wordCount[category] = 0;
+        }
+
+        newWordFrequencyCount[category][word] = newFrequencyTable[key];
+        this.vocabulary.push(word);
+        this.wordCount[category] += newFrequencyTable[key];
+      }
+    }
+
+    this.wordFrequencyCount = newWordFrequencyCount;
 
     return this;
   }
@@ -168,8 +225,7 @@ class NaiveBayes {
         // => out of all documents we've ever looked at, how many were
         //    mapped to this category
         const categoryProbability =
-          this.docCount[category] /
-          (this.vocabularyLimit || this.totalDocuments);
+          this.docCount[category] / this.totalDocuments;
 
         // take the log to avoid underflow
         let logProbability = Math.log(categoryProbability);
@@ -178,8 +234,6 @@ class NaiveBayes {
         Object.keys(frequencyTable).forEach((token) => {
           const frequencyInText = frequencyTable[token];
           const tokenProbability = this.tokenProbability(token, category);
-
-          // console.log('token: %s category: `%s` tokenProbability: %d', token, category, tokenProbability)
 
           // determine the log of the P( w | c ) for this word
           logProbability += frequencyInText * Math.log(tokenProbability);
@@ -201,6 +255,9 @@ class NaiveBayes {
    * @return {Number} probability
    */
   tokenProbability(token, category) {
+    if (!this.wordFrequencyCount[category])
+      this.wordFrequencyCount[category] = {};
+
     const wordFrequencyCount = this.wordFrequencyCount[category][token] || 0;
 
     const wordCount = this.wordCount[category];
@@ -227,23 +284,7 @@ class NaiveBayes {
       }
     }
 
-    if (!this.vocabularyLimit || tokens.length <= this.vocabularyLimit)
-      return frequencyTable;
-
-    const frequentWords = Object.keys(frequencyTable).sort(
-      (a, b) => frequencyTable[a] - frequencyTable[b]
-    );
-
-    const newFrequencyTable = {};
-
-    let count = 0;
-    for (const word of frequentWords) {
-      count += frequencyTable[word];
-      newFrequencyTable[word] = frequencyTable[word];
-      if (count >= this.vocabularyLimit) break;
-    }
-
-    return newFrequencyTable;
+    return frequencyTable;
   }
 
   /**
@@ -258,9 +299,10 @@ class NaiveBayes {
 
   toJsonObject() {
     const state = {};
-    STATE_KEYS.forEach((key) => {
+    for (const key of STATE_KEYS) {
       state[key] = this[key];
-    });
+    }
+
     return state;
   }
 
@@ -271,7 +313,7 @@ class NaiveBayes {
    * @param  {String} jsonStr   state representation obtained by classifier.toJson()
    * @return {NaiveBayes}       Classifier
    */
-  static fromJson(json) {
+  static fromJson(json, limit = 0) {
     if (typeof json === 'string') {
       try {
         json = JSON.parse(json);
@@ -280,7 +322,7 @@ class NaiveBayes {
       }
     }
 
-    json.options = json.options || {};
+    json.options = json.options || { vocabularyLimit: limit };
 
     // init a new classifier
     const classifier = new NaiveBayes(json.options);

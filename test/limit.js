@@ -1,48 +1,27 @@
 const test = require('ava');
 const NaiveBayes = require('../src/naivebayes.js');
-const classifier = new NaiveBayes({ vocabularyLimit: 20 });
 
 function decode(text) {
   return Buffer.from(text, 'base64').toString();
 }
 
-test('naivebase with limit', (t) => {
-  classifier.learn(
-    decode('YW1hemluZywgYXdlc29tZSBtb3ZpZSEhIFllYWghISBPaCBib3ku'),
-    'positive'
-  );
-  classifier.learn(
-    decode(
-      'U3dlZXQsIHRoaXMgaXMgaW5jcmVkaWJseSwgYW1hemluZywgcGVyZmVjdCwgZ3JlYXQhIQ=='
-    ),
-    'positive'
-  );
-  classifier.learn(
-    decode('RG8gb25lIHRoaW5nIGF0IGEgdGltZSwgYW5kIGRvIHdlbGwu'),
-    'positive'
-  );
-  classifier.learn(
-    decode('TmV2ZXIgZm9yZ2V0IHRvIHNheSDigJx0aGFua3PigJ0u'),
-    'positive'
-  );
-  classifier.learn(decode('QmVsaWV2ZSBpbiB5b3Vyc2VsZi4='), 'positive');
-  classifier.learn(
-    decode(
-      'TmV2ZXIgcHV0IG9mZiB3aGF0IHlvdSBjYW4gZG8gdG9kYXkgdW50aWwgdG9tb3Jyb3cu'
-    ),
-    'positive'
-  );
-  classifier.learn(
-    decode(
-      'RG9uJ3QgYWltIGZvciBzdWNjZXNzIGlmIHlvdSB3YW50IGl0OyBqdXN0IGRvIHdoYXQgeW91IGxvdmUgYW5kIGJlbGlldmUgaW4sIGFuZCBpdCB3aWxsIGNvbWUgbmF0dXJhbGx5Lg=='
-    ),
-    'positive'
-  );
+test('naivebayes with limit', (t) => {
+  const classifier = new NaiveBayes({ vocabularyLimit: 80 });
 
+  classifier.learn('amazing, awesome movie!! Yeah!! Oh boy.', 'positive');
   classifier.learn(
-    decode('dGVycmlibGUsIHNoaXR0eSB0aGluZy4gRGFtbi4gU3Vja3MhIQ=='),
-    'negative'
+    'Sweet, this is incredibly, amazing, perfect, great!!',
+    'positive'
   );
+  classifier.learn('Do one thing at a time, and do well.', 'positive');
+  classifier.learn('Never forget to say “thanks”.', 'positive');
+  classifier.learn('Believe in yourself.', 'positive');
+
+  classifier.learn('terrible, crappy thing. Dang. Stinks!!', 'negative');
+  classifier.learn('ugh, bad. This is annoying.', 'negative');
+  classifier.learn('No, why. This is dumb', 'negative');
+  classifier.learn('Are you serious? This sucks!', 'negative');
+  classifier.learn("I don't want to be here", 'negative');
 
   classifier.learn(decode('R2V0IG91dCAhQmVhdCBpdCEgR2V0IGxvc3Qh'), 'foul');
   classifier.learn(decode('R28gdG8gaGVsbCEgR28gdG8gdGhlIGRldmlsIQ=='), 'foul');
@@ -50,6 +29,15 @@ test('naivebase with limit', (t) => {
   classifier.learn(decode('WW91IFNPQiAoc29uIG9mIGEpIQ=='), 'foul');
   classifier.learn(decode('U09HIChzb24gb2YgR3VuKSE='), 'foul');
   classifier.learn(decode('RGFtbiB5b3Uh'), 'foul');
+
+  const pFoul = classifier.categorize(decode('R2V0IGxvc3QgeW91IFNPQg=='));
+  t.is(pFoul, 'foul');
+
+  const pNegative = classifier.categorize('Oh no that is crappy');
+  t.is(pNegative, 'negative');
+
+  const pPositive = classifier.categorize('Sweet that was awesome');
+  t.is(pPositive, 'positive');
 
   const classifierJson = classifier.toJson();
   const classifierJsonObject = classifier.toJsonObject();
@@ -60,4 +48,44 @@ test('naivebase with limit', (t) => {
     'negative',
     'foul'
   ]);
+});
+
+test('naivebayes from json with implicit limit', (t) => {
+  const json = require('./fixtures/classifier-with-limit');
+  const classifier = NaiveBayes.fromJson(json);
+  t.is(classifier.vocabularyLimit, 80);
+
+  const pFoul = classifier.categorize(decode('WW91IGdldCBvdXQh'));
+  t.is(pFoul, 'foul');
+
+  const pNegative = classifier.categorize('Oh no that is crappy');
+  t.is(pNegative, 'negative');
+
+  const pPositive = classifier.categorize('Sweet that was awesome');
+  t.is(pPositive, 'positive');
+
+  const state = classifier.toJsonObject();
+
+  t.true(state.vocabulary.length <= 80);
+});
+
+test('naivebayes from json with explicit limit', (t) => {
+  const json = require('./fixtures/classifier-without-limit');
+  const classifier = NaiveBayes.fromJson(json, 80);
+  t.is(classifier.vocabularyLimit, 80);
+
+  classifier.learn(decode('WW91IGdldCBvdXQh'), 'foul');
+
+  const pFoul = classifier.categorize(decode('WW91IGdldCBvdXQh'));
+  t.is(pFoul, 'foul');
+
+  const pNegative = classifier.categorize('Oh no that is crappy');
+  t.is(pNegative, 'negative');
+
+  const pPositive = classifier.categorize('Sweet that was awesome');
+  t.is(pPositive, 'positive');
+
+  const state = classifier.toJsonObject();
+
+  t.true(state.vocabulary.length <= 80);
 });

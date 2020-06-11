@@ -59,7 +59,7 @@
       "git add"
     ]
   },
-  "main": "src/index.js",
+  "main": "./src/index.js",
   "prettier": {
     "singleQuote": true,
     "bracketSpacing": true,
@@ -82,6 +82,7 @@
     "ava": "cross-env NODE_ENV=test ava",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "lint": "xo && remark . -qfo",
+    "lint:fix": "xo --fix",
     "nyc": "cross-env NODE_ENV=test nyc ava",
     "test": "yarn run lint && yarn run ava",
     "test-coverage": "yarn run lint && yarn run nyc"
