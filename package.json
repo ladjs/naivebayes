@@ -59,7 +59,7 @@
       "git add"
     ]
   },
-  "main": "./src/index.js",
+  "main": "src/naivebayes.js",
   "prettier": {
     "singleQuote": true,
     "bracketSpacing": true,
