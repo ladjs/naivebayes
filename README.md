@@ -12,13 +12,11 @@
 
 ## Table of Contents
 
+* [What can I use this for](#what-can-i-use-this-for)
 * [Install](#install)
   * [npm](#npm)
   * [yarn](#yarn)
 * [Usage](#usage)
-* [What can I use this for](#what-can-i-use-this-for)
-* [Installing](#installing)
-* [Usage](#usage-1)
 * [API](#api)
   * [Class](#class)
   * [Learn](#learn)
@@ -27,7 +25,21 @@
   * [ToJson](#tojson)
   * [ToJsonObject](#tojsonobject)
   * [FromJson](#fromjson)
+  * [Debug](#debug)
 * [Contributors](#contributors)
+
+
+## What can I use this for
+
+Naive-Bayes classifier for JavaScript.
+
+`naivebayes` takes a document (piece of text), and tells you what category that document belongs to.
+
+You can use this for categorizing any text content into any arbitrary set of **categories**. For example:
+
+* Is an email **spam**, or **not spam** ?
+* Is a news article about **technology**, **politics**, or **sports** ?
+* Is a piece of text expressing **positive** emotions, or **negative** emotions?
 
 
 ## Install
@@ -42,29 +54,6 @@ npm install @ladjs/naivebayes
 
 ```sh
 yarn add @ladjs/naivebayes
-```
-
-
-## Usage
-
-Naive-Bayes classifier for JavaScript.
-
-`naivebayes` takes a document (piece of text), and tells you what category that document belongs to.
-
-
-## What can I use this for
-
-You can use this for categorizing any text content into any arbitrary set of **categories**. For example:
-
-* Is an email **spam**, or **not spam** ?
-* Is a news article about **technology**, **politics**, or **sports** ?
-* Is a piece of text expressing **positive** emotions, or **negative** emotions?
-
-
-## Installing
-
-```sh
-npm install naivebayes --save
 ```
 
 
@@ -186,6 +175,10 @@ const classifier = NaiveBayes.fromJson(jsonObject)
 ```
 
 Returns a classifier instance from the JSON representation. Use this with the JSON representation obtained from `classifier.toJson()`.
+
+### Debug
+
+To run `naivebayes` in debug mode simply set `DEBUG=naivebayes` when running your script.
 
 
 ## Contributors

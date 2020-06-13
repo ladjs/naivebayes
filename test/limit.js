@@ -6,7 +6,7 @@ function decode(text) {
 }
 
 test('naivebayes with limit', (t) => {
-  const classifier = new NaiveBayes({ vocabularyLimit: 80 });
+  const classifier = new NaiveBayes({ vocabularyLimit: 10 });
 
   classifier.learn('amazing, awesome movie!! Yeah!! Oh boy.', 'positive');
   classifier.learn(
@@ -70,7 +70,7 @@ test('naivebayes from json with implicit limit', (t) => {
 });
 
 test('naivebayes from json with explicit limit', (t) => {
-  const json = require('./fixtures/classifier-without-limit');
+  const json = require('./fixtures/classifier-with-limit');
   const classifier = NaiveBayes.fromJson(json, 80);
   t.is(classifier.vocabularyLimit, 80);
 

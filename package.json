@@ -19,6 +19,9 @@
     "Surmon <i@surmon.me> (http://surmon.me/)",
     "Shaun Warman <shaunwarman1@gmail.com> (https://shaunwarman.com/)"
   ],
+  "dependencies": {
+    "debug": "^4.1.1"
+  },
   "devDependencies": {
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
@@ -30,7 +33,9 @@
     "fixpack": "latest",
     "husky": "latest",
     "lint-staged": "latest",
+    "mailparser": "^2.7.7",
     "nyc": "latest",
+    "read-dir-deep": "^7.0.1",
     "remark-cli": "latest",
     "remark-preset-github": "latest",
     "xo": "latest"
