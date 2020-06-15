@@ -1,4 +1,5 @@
 const debug = require('debug')('naivebayes');
+const stopword = require('stopword');
 
 /**
  * keys we use to serialize a classifier's state
@@ -36,7 +37,7 @@ const defaultTokenizer = (text) => {
  *
  */
 class NaiveBayes {
-  constructor(options) {
+  constructor(options = {}) {
     // set options object
     this.options = {};
     if (typeof options !== 'undefined') {
@@ -63,6 +64,9 @@ class NaiveBayes {
 
     // document frequency table for each of our categories
     this.docCount = {};
+
+    // filter stopwords from vocabulary
+    this.stopwords = options.stopwords || false;
 
     // for each category, how many words total were mapped to it
     this.wordCount = {};
@@ -111,7 +115,11 @@ class NaiveBayes {
     this.totalDocuments++;
 
     // normalize the text into a word array
-    const tokens = this.tokenizer(text);
+    let tokens = this.tokenizer(text);
+
+    if (this.stopwords) {
+      tokens = stopword.removeStopwords(tokens);
+    }
 
     // get a frequency count for each token in the text
     const frequencyTable = this.frequencyTable(tokens);
@@ -223,7 +231,9 @@ class NaiveBayes {
         // => out of all documents we've ever looked at, how many were
         //    mapped to this category
         const categoryProbability =
-          this.docCount[category] / this.totalDocuments;
+          this.docCount[category] / this.vocabularyLimit
+            ? this.wordCount[category]
+            : this.totalDocuments;
 
         // take the log to avoid underflow
         let logProbability = Math.log(categoryProbability);
@@ -313,7 +323,7 @@ class NaiveBayes {
    * @param  {String} jsonStr   state representation obtained by classifier.toJson()
    * @return {NaiveBayes}       Classifier
    */
-  static fromJson(json, limit = 0) {
+  static fromJson(json, limit) {
     if (typeof json === 'string') {
       try {
         json = JSON.parse(json);
@@ -322,7 +332,9 @@ class NaiveBayes {
       }
     }
 
-    json.options = json.options || { vocabularyLimit: limit };
+    if (json.options && limit) {
+      json.options.vocabularyLimit = limit || 0;
+    }
 
     // init a new classifier
     const classifier = new NaiveBayes(json.options);

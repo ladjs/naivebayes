@@ -117,6 +117,7 @@ Returns an instance of a Naive-Bayes Classifier.
 
 * `tokenizer(text)` - (type: `function`) -  Configure your own tokenizer.
 * `vocabularyLimit` - (type: `number` default: 0) - Reference a max word count where `0` is the default, meaning no limit.
+* `stopwords` - (type: `boolean` default: false) - To remove [stopwords](https://en.wikipedia.org/wiki/Stop_words) from text
 
 Eg.
 

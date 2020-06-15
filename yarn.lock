@@ -6640,6 +6640,11 @@ static-extend@^0.1.1:
     define-property "^0.2.5"
     object-copy "^0.1.0"
 
+stopword@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/stopword/-/stopword-1.0.1.tgz#b91f873c9d3e870af47189c84423eb0280e9dfbc"
+  integrity sha512-mcBsIyr5/cJ0QMlXd8P5vtFyvHPTP8m9mOs8OCu84uAOc9QVRpBUz9KhHu0T5rZDycu5NvHSu3/m1Qz7m2ZCiw==
+
 stream-browserify@^2.0.1:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/stream-browserify/-/stream-browserify-2.0.2.tgz#87521d38a44aa7ee91ce1cd2a47df0cb49dd660b"

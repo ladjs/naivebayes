@@ -5,7 +5,7 @@ const { readDirDeep } = require('read-dir-deep');
 const { simpleParser } = require('mailparser');
 
 const NaiveBayes = require('.');
-const classifier = new NaiveBayes({ vocabularyLimit: 300 });
+const classifier = new NaiveBayes({ vocabularyLimit: 300, stopwords: true });
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
